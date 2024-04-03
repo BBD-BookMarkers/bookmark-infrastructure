@@ -4,11 +4,10 @@ on:
   pull_request:
     branches:
       - dev
-      - main
   workflow_call: 
 
 jobs:
-    cd-workflow:
+    cdk-verify:
       runs-on: ubuntu-latest
 
       steps:
