@@ -13,5 +13,5 @@ new BookmarkInfrastructureStack(app, 'BookmarkInfrastructureStack-nonprod', {
   },
   keyPairName: 'bookmark-ec2-key-pair', // add nonprod
   dbUsername: 'bookmarkDev',
-  dbPort: 60221,
+  dbPort: 1433,
 });
