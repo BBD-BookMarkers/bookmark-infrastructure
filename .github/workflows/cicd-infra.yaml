@@ -7,10 +7,12 @@ on:
 
 jobs:
     ci-workflow:
-        name: Continuous Integration
+        name: CI
         uses: ./.github/workflows/ci-infra.yaml
+        secrets: inherit
 
     cd-workflow:
-        name: Continuous Deployment
+        name: CD
         needs: ci-workflow
         uses: ./.github/workflows/cd-infra.yaml
+        secrets: inherit
