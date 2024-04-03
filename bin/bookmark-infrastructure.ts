@@ -12,6 +12,6 @@ new BookmarkInfrastructureStack(app, 'BookmarkInfrastructureStack-nonprod', {
     DeployEnv: 'dev'
   },
   keyPairName: 'bookmark-ec2-key-pair', // add nonprod
-  dbUsername: 'bookmark-db-dev',
+  dbUsername: 'bookmarkDev',
   dbPort: 60221,
 });
