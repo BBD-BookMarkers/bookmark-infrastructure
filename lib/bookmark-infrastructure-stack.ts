@@ -14,7 +14,6 @@ const createVpc = (construct: Construct, stackName: string): ec2.Vpc => {
   const vpc = new ec2.Vpc(construct, `${stackName}-vpc`, {
     ipAddresses: ec2.IpAddresses.cidr('10.0.0.0/24'),
     natGateways: 1,
-    maxAzs: 1,
     subnetConfiguration: [
       {
         name: `${stackName}-public-subnet-1`,
