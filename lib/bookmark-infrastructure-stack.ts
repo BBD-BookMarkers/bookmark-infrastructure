@@ -76,7 +76,6 @@ const createDBInstance = (scope: Construct, vpc: ec2.Vpc, dbUsername: string): r
     multiAz: false,
     allocatedStorage: 20,
     removalPolicy: cdk.RemovalPolicy.DESTROY,
-    databaseName: 'bookmark-db',
   });
 
   return dbInstance;
