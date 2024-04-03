@@ -1,0 +1,16 @@
+name: CI/CD
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    ci-workflow:
+        name: Continuous Integration
+        uses: ./.github/workflows/ci-infra.yaml
+
+    cd-workflow:
+        name: Continuous Deployment
+        needs: ci-workflow
+        uses: ./.github/workflows/cd-infra.yaml
