@@ -1,26 +1,16 @@
-name: CDK Verification
+name: CI/CD
 
 on:
-  pull_request:
-    branches:
-      - dev
-      - main
+    push:
+        branches:
+            - main
 
 jobs:
-  cdk-verify:
-    runs-on: ubuntu-latest
+    ci-workflow:
+        name: Continuous Integration
+        uses: ./.github/workflows/ci-infra.yaml
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20.12.0'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: CDK Synth
-        run: npx cdk synth
+    cd-workflow:
+        name: Continuous Deployment
+        needs: ci-workflow
+        uses: ./.github/workflows/cd-infra.yaml
