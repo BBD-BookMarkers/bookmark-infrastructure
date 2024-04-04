@@ -1,12 +1,13 @@
 #!/bin/bash
 sudo yum update -y
 sudo curl -o /etc/yum.repos.d/msprod.repo https://packages.microsoft.com/config/rhel/9/prod.repo
-sudo yum install mssql-tools
-sudo yum install jq
+sudo ACCEPT_EULA=Y yum install mssql-tools -y
+sudo yum install jq -y
 
-export PATH="$PATH:/opt/mssql-tools/bin"
+echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+source ~/.bashrc
 
-credentials=$(aws secretsmanager get-secret-value --secret-id bookmarkers-prod-rds-credentials --query SecretString --output text)
+credentials=$(aws secretsmanager get-secret-value --secret-id bookmark-rds-credentials-prod --region eu-west-1 --query SecretString --output text)
 username=$(echo $credentials | jq -r '.username')
 password=$(echo $credentials | jq -r '.password')
 host=$(echo $credentials | jq -r '.host')
@@ -23,7 +24,8 @@ database_name="bookmarkerdb"
 if database_exists "$database_name"; then
     echo "Database '$database_name' already exists."
 else
-    sqlcmd -S "$host" -U "$username" -P "$password" -Q "use master; CREATE DATABASE $database_name; use $database_name;"
+    sqlcmd -S "$host" -U "$username" -P "$password" -Q "use master; CREATE DATABASE $database_name;"
+    sqlcmd -S "$host" -U "$username" -P "$password" -Q "use $database_name;"
     echo "Database '$database_name' created."
 fi
 
