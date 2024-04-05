@@ -73,6 +73,7 @@ const createEC2Instance = (scope: Construct, vpc: ec2.Vpc, keyPairName: string, 
 
   const eip = new ec2.CfnEIP(scope, 'bookmark-eip');
   const eipAssoc = new ec2.CfnEIPAssociation(scope, 'bookmark-eip-assoc', {
+    allocationId: eip.attrAllocationId,
     instanceId: ec2Instance.instanceId,
   });
 
