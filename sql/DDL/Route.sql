@@ -8,5 +8,7 @@ CREATE TABLE "Route" (
 );
 --rollback DROP TABLE "Route";
 
+--changeset tphipson:add-route-pk
 ALTER TABLE "Route"
 ADD CONSTRAINT [PK_Route] PRIMARY KEY CLUSTERED ("routeId" ASC);
+--rollback ALTER TABLE "Route" DROP CONSTRAINT PK_Route;
