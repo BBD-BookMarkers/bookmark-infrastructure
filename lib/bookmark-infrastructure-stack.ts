@@ -71,6 +71,11 @@ const createEC2Instance = (scope: Construct, vpc: ec2.Vpc, keyPairName: string, 
     role: ec2IAMRole,
   });
 
+  const eip = new ec2.CfnEIP(scope, 'bookmark-eip');
+  const eipAssoc = new ec2.CfnEIPAssociation(scope, 'bookmark-eip-assoc', {
+    instanceId: ec2Instance.instanceId,
+  });
+
   const userDataPath = depEnv === 'dev' ? './lib/user-data-nonprod.sh' : './lib/user-data-prod.sh';
   const userDataScript = readFileSync(userDataPath, 'utf8');
   ec2Instance.addUserData(userDataScript);
