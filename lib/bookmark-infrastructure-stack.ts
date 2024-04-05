@@ -99,7 +99,7 @@ const createDBInstance = (scope: Construct, vpc: ec2.Vpc, dbUsername: string, de
       version: rds.SqlServerEngineVersion.VER_16,
     }),
     instanceType: ec2.InstanceType.of(
-      ec2.InstanceClass.BURSTABLE2,
+      ec2.InstanceClass.BURSTABLE3,
       ec2.InstanceSize.MICRO,
     ),
     credentials: rds.Credentials.fromGeneratedSecret(dbUsername, {
