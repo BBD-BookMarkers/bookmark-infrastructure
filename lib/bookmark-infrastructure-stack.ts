@@ -62,7 +62,7 @@ const createEC2Instance = (scope: Construct, vpc: ec2.Vpc, keyPairName: string, 
     vpcSubnets: {
       subnetType: ec2.SubnetType.PUBLIC,
     },
-    instanceType: ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE2, ec2.InstanceSize.NANO),
+    instanceType: ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE2, ec2.InstanceSize.MICRO),
     keyPair: keyPair,
     machineImage: new ec2.AmazonLinuxImage({
       generation: ec2.AmazonLinuxGeneration.AMAZON_LINUX_2,
@@ -100,7 +100,7 @@ const createDBInstance = (scope: Construct, vpc: ec2.Vpc, dbUsername: string, de
     }),
     instanceType: ec2.InstanceType.of(
       ec2.InstanceClass.BURSTABLE2,
-      ec2.InstanceSize.NANO,
+      ec2.InstanceSize.MICRO,
     ),
     credentials: rds.Credentials.fromGeneratedSecret(dbUsername, {
       secretName: `bookmark-rds-credentials-${depEnv}`
