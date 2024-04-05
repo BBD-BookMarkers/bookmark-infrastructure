@@ -22,11 +22,11 @@ const createVpc = (construct: Construct, depEnv: string): ec2.Vpc => {
         subnetType: ec2.SubnetType.PUBLIC,
         cidrMask: 28,
       },
-      {
-        name: `bookmark-isolated-subnet-1-${depEnv}`,
-        subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
-        cidrMask: 28,
-      }
+      // {
+      //   name: `bookmark-isolated-subnet-1-${depEnv}`,
+      //   subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+      //   cidrMask: 28,
+      // }
     ]
   });
   return vpc;
@@ -62,7 +62,7 @@ const createEC2Instance = (scope: Construct, vpc: ec2.Vpc, keyPairName: string, 
     vpcSubnets: {
       subnetType: ec2.SubnetType.PUBLIC,
     },
-    instanceType: ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE2, ec2.InstanceSize.MICRO),
+    instanceType: ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE2, ec2.InstanceSize.NANO),
     keyPair: keyPair,
     machineImage: new ec2.AmazonLinuxImage({
       generation: ec2.AmazonLinuxGeneration.AMAZON_LINUX_2,
@@ -78,18 +78,29 @@ const createEC2Instance = (scope: Construct, vpc: ec2.Vpc, keyPairName: string, 
   return ec2Instance;
 }
 
-const createDBInstance = (scope: Construct, vpc: ec2.Vpc, dbUsername: string, depEnv: string): rds.DatabaseInstance => {
+const createDBInstance = (scope: Construct, vpc: ec2.Vpc, dbUsername: string, depEnv: string, port: number): rds.DatabaseInstance => {
+  const dbSG = new ec2.SecurityGroup(scope, 'db-sec-group', {
+    vpc: vpc,
+    securityGroupName: `bookmark-db-security-group-${depEnv}`
+  });
+
+  dbSG.addIngressRule(
+    ec2.Peer.anyIpv4(),
+    ec2.Port.tcp(port),
+    'Allow MSSQL Connections.'
+  );
+
   const dbInstance = new rds.DatabaseInstance(scope, `bookmark-db-${depEnv}`, {
     vpc: vpc,
     vpcSubnets: {
-      subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+      subnetType: ec2.SubnetType.PUBLIC,
     },
     engine: rds.DatabaseInstanceEngine.sqlServerEx({
       version: rds.SqlServerEngineVersion.VER_16,
     }),
     instanceType: ec2.InstanceType.of(
-      ec2.InstanceClass.BURSTABLE3,
-      ec2.InstanceSize.MICRO,
+      ec2.InstanceClass.BURSTABLE2,
+      ec2.InstanceSize.NANO,
     ),
     credentials: rds.Credentials.fromGeneratedSecret(dbUsername, {
       secretName: `bookmark-rds-credentials-${depEnv}`
@@ -97,6 +108,7 @@ const createDBInstance = (scope: Construct, vpc: ec2.Vpc, dbUsername: string, de
     multiAz: false,
     allocatedStorage: 20,
     removalPolicy: cdk.RemovalPolicy.DESTROY,
+    securityGroups: [dbSG],
   });
 
   return dbInstance;
@@ -108,7 +120,7 @@ export class BookmarkInfrastructureStack extends cdk.Stack {
 
     const vpc = createVpc(this, props.deployEnv);
     const ec2Instance = createEC2Instance(this, vpc, props.keyPairName, props.deployEnv);
-    const db = createDBInstance(this, vpc, props.dbUsername, props.deployEnv);
+    const db = createDBInstance(this, vpc, props.dbUsername, props.deployEnv, props.dbPort);
 
     db.connections.allowFrom(ec2Instance, ec2.Port.tcp(props.dbPort));
   };
