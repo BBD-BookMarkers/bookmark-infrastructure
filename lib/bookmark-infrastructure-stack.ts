@@ -52,7 +52,7 @@ const createEC2Instance = (scope: Construct, vpc: ec2.Vpc, keyPairName: string, 
   });
 
   ec2IAMRole.addToPolicy(new iam.PolicyStatement({
-    actions: ['secretsmanager:GetSecretValue', 'ssm:GetParameter', 'ssm:Decrypt'],
+    actions: ['secretsmanager:GetSecretValue', 'ssm:GetParameter'],
     resources: ['*'],
   }));
 
