@@ -7,5 +7,7 @@ CREATE TABLE "User" (
 );
 --rollback DROP TABLE "User";
 
+--changeset tphipson:add-user-pk
 ALTER TABLE "User"
 ADD CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED ("userId" ASC);
+--rollback ALTER TABLE "User" DROP CONSTRAINT PK_User;
