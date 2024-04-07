@@ -52,7 +52,7 @@ const createEC2Instance = (scope: Construct, vpc: ec2.Vpc, keyPairName: string, 
   });
 
   ec2IAMRole.addToPolicy(new iam.PolicyStatement({
-    actions: ['secretsmanager:GetSecretValue', 'ssm:GetParameter'],
+    actions: ['secretsmanager:GetSecretValue', 'ssm:GetParameter', 'ec2:DescribeInstances'],
     resources: ['*'],
   }));
 
@@ -115,6 +115,7 @@ const createDBInstance = (scope: Construct, vpc: ec2.Vpc, dbUsername: string, de
     allocatedStorage: 20,
     removalPolicy: cdk.RemovalPolicy.DESTROY,
     securityGroups: [dbSG],
+    instanceIdentifier: `bookmarker-db-${depEnv}`,
   });
 
   return dbInstance;
