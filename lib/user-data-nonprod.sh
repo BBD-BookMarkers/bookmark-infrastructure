@@ -8,9 +8,9 @@ sudo yum install dotnet-sdk-8.0 -y
 dotnet tool install --global x
 . /etc/profile.d/dotnet-cli-tools-bin-path.sh
 dotnet sdk check
-echo "export PATH=$PATH:/usr/local/bin" >> ~/.bashrc
-echo "export PATH=$PATH:/opt/mssql-tools/bin" >> ~/.bashrc
-source ~/.bashrc
+echo "export PATH=$PATH:/usr/local/bin" >> /home/ec2-user/.bashrc
+echo "export PATH=$PATH:/opt/mssql-tools/bin" >> /home/ec2-user/.bashrc
+source /home/ec2-user/.bashrc
 
 credentials=$(aws secretsmanager get-secret-value --secret-id bookmark-rds-credentials-dev --region eu-west-1 --query SecretString --output text)
 username=$(echo $credentials | jq -r '.username')
@@ -45,7 +45,7 @@ After=network.target
 [Service]
 User=ec2-user
 WorkingDirectory=/home/ec2-user/server/
-ExecStart=/usr/bin/dotnet dotnet /home/ec2-user/server/Api.dll
+ExecStart=/usr/bin/dotnet /home/ec2-user/server/Api.dll
 ExecStop=
 Restart=always
 RestartSec=3
