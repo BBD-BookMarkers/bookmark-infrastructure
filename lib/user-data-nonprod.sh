@@ -29,3 +29,24 @@ else
     echo "Database '$database_name' created."
 fi
 
+cd /home/ec2-user/
+mkdir server
+
+cat <<'SERVICE' | sudo tee /etc/systemd/system/server.service > /dev/null
+[Unit]
+Description=Server Service
+After=network.target
+
+[Service]
+User=ec2-user
+WorkingDirectory=/home/ec2-user/server/
+ExecStart=dotnet /home/ec2-user/server/Api.dll
+ExecStop=
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+SERVICE
+
+sudo systemctl daemon-reload
