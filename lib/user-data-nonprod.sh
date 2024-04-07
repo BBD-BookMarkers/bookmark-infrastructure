@@ -1,10 +1,17 @@
 #!/bin/bash
+sudo su -
 sudo yum update -y
 sudo curl -o /etc/yum.repos.d/msprod.repo https://packages.microsoft.com/config/rhel/9/prod.repo
 sudo ACCEPT_EULA=Y yum install mssql-tools -y
 sudo yum install jq -y
 
-echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+sudo yum install aspnetcore-runtime-8.0 -y
+sudo yum install dotnet-sdk-8.0 -y
+dotnet tool install --global x
+. /etc/profile.d/dotnet-cli-tools-bin-path.sh
+dotnet sdk check
+echo "export PATH=$PATH:/usr/local/bin" >> ~/.bashrc
+echo "export PATH=$PATH:/opt/mssql-tools/bin" >> ~/.bashrc
 source ~/.bashrc
 
 credentials=$(aws secretsmanager get-secret-value --secret-id bookmark-rds-credentials-dev --region eu-west-1 --query SecretString --output text)
