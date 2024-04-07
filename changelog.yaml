@@ -1,9 +1,9 @@
 databaseChangeLog:
   - include:
-      file: sql\DDL\Bookmark.sql
-  - include:
       file: sql\DDL\Route.sql
   - include:
       file: sql\DDL\User.sql
+  - include:
+      file: sql\DDL\Bookmark.sql
   - include:
       file: sql\DML\dummy.sql

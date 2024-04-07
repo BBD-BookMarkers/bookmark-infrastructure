@@ -10,14 +10,17 @@ CREATE TABLE "Bookmark" (
 );
 --rollback DROP TABLE Bookmark;
 
+--changeset tphipson:add-bookmark-pk
 ALTER TABLE "Bookmark"
-ADD CONSTRAINT [FK_userId] FOREIGN KEY ("userId") REFERENCES "User" ("userId");
+ADD CONSTRAINT [PK_Bookmark] PRIMARY KEY CLUSTERED ("bookmarkId" ASC);
 --rollback ALTER TABLE "Bookmark" DROP CONSTRAINT PK_Bookmark;
 
+--changeset tphipson:add-bookmark-fk-user
 ALTER TABLE "Bookmark"
 ADD CONSTRAINT [FK_UserId] FOREIGN KEY ("userId") REFERENCES "User" ("userId");
 --rollback ALTER TABLE "Bookmark" DROP CONSTRAINT FK_UserId;
 
+--changeset tphipson:add-bookmark-fk-route
 ALTER TABLE "Bookmark"
 ADD CONSTRAINT [FK_routeId] FOREIGN KEY ("routeId") REFERENCES "Route" ("routeId");
 --rollback ALTER TABLE "Bookmark" DROP CONSTRAINT FK_RouteId;
