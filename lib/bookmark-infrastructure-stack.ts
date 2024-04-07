@@ -52,7 +52,7 @@ const createEC2Instance = (scope: Construct, vpc: ec2.Vpc, keyPairName: string, 
   });
 
   ec2IAMRole.addToPolicy(new iam.PolicyStatement({
-    actions: ['secretsmanager:GetSecretValue', 'ssm:GetParameter', 'ec2:DescribeInstances'],
+    actions: ['secretsmanager:GetSecretValue', 'ssm:GetParameter'],
     resources: ['*'],
   }));
 
@@ -77,8 +77,8 @@ const createEC2Instance = (scope: Construct, vpc: ec2.Vpc, keyPairName: string, 
     instanceId: ec2Instance.instanceId,
   });
 
-  const userDataPath = depEnv === 'dev' ? './lib/user-data-nonprod.sh' : './lib/user-data-prod.sh';
-  const userDataScript = readFileSync(userDataPath, 'utf8');
+  // const userDataPath = depEnv === 'dev' ? './lib/user-data-nonprod.sh' : './lib/user-data-prod.sh';
+  const userDataScript = readFileSync('./lib/user-data-nonprod.sh', 'utf8');
   ec2Instance.addUserData(userDataScript);
 
   return ec2Instance;
