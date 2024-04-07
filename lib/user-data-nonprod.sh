@@ -1,5 +1,3 @@
-#!/bin/bash
-sudo su -
 sudo yum update -y
 sudo curl -o /etc/yum.repos.d/msprod.repo https://packages.microsoft.com/config/rhel/9/prod.repo
 sudo ACCEPT_EULA=Y yum install mssql-tools -y
@@ -47,7 +45,7 @@ After=network.target
 [Service]
 User=ec2-user
 WorkingDirectory=/home/ec2-user/server/
-ExecStart=dotnet /home/ec2-user/server/Api.dll
+ExecStart=/usr/bin/dotnet dotnet /home/ec2-user/server/Api.dll
 ExecStop=
 Restart=always
 RestartSec=3
