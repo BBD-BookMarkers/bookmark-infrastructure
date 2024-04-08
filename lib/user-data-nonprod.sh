@@ -52,8 +52,8 @@ jwt_token=$(aws secretsmanager get-secret-value --secret-id /bookmark/jwt/key --
 connect_string="Data Source=$host;Initial Catalog=$database_name;User ID=$username;Password=$password;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False"
 
 cat <<'CONF' | sudo tee /etc/systemd/system/server.conf > /dev/null
-Jwt__Key=$jwt_token
-ConnectionStrings__DefaultConnection=$connect_string
+Jwt__Key="$jwt_token"
+ConnectionStrings__DefaultConnection="$connect_string"
 CONF
 
 cat <<'SERVICE' | sudo tee /etc/systemd/system/server.service > /dev/null
