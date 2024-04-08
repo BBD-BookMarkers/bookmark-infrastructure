@@ -41,8 +41,8 @@ sudo chown ec2-user:ec2-user /home/ec2-user/server/
 jwt_token=$(aws secretsmanager get-secret-value --secret-id /bookmark/jwt/key --region eu-west-1 --query SecretString --output text | jq -r '.jwt')
 connect_string="Data Source=$host;Initial Catalog=$database_name;User ID=$username;Password=$password;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False"
 
-echo "Jwt__Key=$jwt_token" > /etc/systemd/system/server.conf
-echo "ConnectionStrings__DefaultConnection=$connect_string" >> /etc/systemd/system/server.conf
+sudo echo "Jwt__Key=$jwt_token" > /etc/systemd/system/server.conf
+sudo echo "ConnectionStrings__DefaultConnection=$connect_string" >> /etc/systemd/system/server.conf
 
 cat <<'SERVICE' | sudo tee /etc/systemd/system/server.service > /dev/null
 [Unit]
@@ -63,3 +63,4 @@ WantedBy=multi-user.target
 SERVICE
 
 sudo systemctl daemon-reload
+sudo systemctl enable server.service
