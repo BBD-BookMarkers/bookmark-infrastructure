@@ -10,9 +10,9 @@ sudo yum install dotnet-sdk-8.0 -y
 dotnet tool install --global x
 . /etc/profile.d/dotnet-cli-tools-bin-path.sh
 dotnet sdk check
-
-sudo sh -c 'echo "export PATH=\$PATH:/usr/local/bin:/opt/mssql-tools/bin" > /etc/profile.d/custom.sh'
-sudo bash /etc/profile.d/custom.sh
+echo "export PATH=$PATH:/usr/local/bin" >> /home/ec2-user/.bashrc
+echo "export PATH=$PATH:/opt/mssql-tools/bin" >> /home/ec2-user/.bashrc
+source /home/ec2-user/.bashrc
 
 echo "====================== Done Installing Dependancies ======================"
 
