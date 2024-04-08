@@ -63,3 +63,4 @@ WantedBy=multi-user.target
 SERVICE
 
 sudo systemctl daemon-reload
+sudo systemctl enable server.service
