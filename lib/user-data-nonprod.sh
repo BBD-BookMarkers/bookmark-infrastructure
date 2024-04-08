@@ -1,3 +1,5 @@
+echo "====================== Installing Dependancies ======================"
+
 sudo yum update -y
 sudo curl -o /etc/yum.repos.d/msprod.repo https://packages.microsoft.com/config/rhel/9/prod.repo
 sudo ACCEPT_EULA=Y yum install mssql-tools -y
@@ -8,9 +10,13 @@ sudo yum install dotnet-sdk-8.0 -y
 dotnet tool install --global x
 . /etc/profile.d/dotnet-cli-tools-bin-path.sh
 dotnet sdk check
-echo "export PATH=$PATH:/usr/local/bin" >> /home/ec2-user/.bashrc
-echo "export PATH=$PATH:/opt/mssql-tools/bin" >> /home/ec2-user/.bashrc
-source /home/ec2-user/.bashrc
+
+sudo sh -c 'echo "export PATH=\$PATH:/usr/local/bin:/opt/mssql-tools/bin" > /etc/profile.d/custom.sh'
+sudo bash /etc/profile.d/custom.sh
+
+echo "====================== Done Installing Dependancies ======================"
+
+echo "====================== Database Check ======================"
 
 credentials=$(aws secretsmanager get-secret-value --secret-id bookmark-rds-credentials-dev --region eu-west-1 --query SecretString --output text)
 username=$(echo $credentials | jq -r '.username')
@@ -34,15 +40,21 @@ else
     echo "Database '$database_name' created."
 fi
 
+echo "====================== Done Database Check ======================"
+
 cd /home/ec2-user/
 mkdir server
 sudo chown ec2-user:ec2-user /home/ec2-user/server/
 
+echo "====================== Init Server Service ======================"
+
 jwt_token=$(aws secretsmanager get-secret-value --secret-id /bookmark/jwt/key --region eu-west-1 --query SecretString --output text | jq -r '.jwt')
 connect_string="Data Source=$host;Initial Catalog=$database_name;User ID=$username;Password=$password;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False"
 
-echo "Jwt__Key=$jwt_token" | sudo tee /etc/systemd/system/server.conf > /dev/null
-echo "ConnectionStrings__DefaultConnection=$connect_string" | sudo tee -a /etc/systemd/system/server.conf > /dev/null
+cat <<'CONF' | sudo tee /etc/systemd/system/server.conf > /dev/null
+Jwt__Key=$jwt_token
+ConnectionStrings__DefaultConnection=$connect_string
+CONF
 
 cat <<'SERVICE' | sudo tee /etc/systemd/system/server.service > /dev/null
 [Unit]
@@ -64,3 +76,5 @@ SERVICE
 
 sudo systemctl daemon-reload
 sudo systemctl enable server.service
+
+echo "====================== Done Init Server Service ======================"
