@@ -44,6 +44,12 @@ const createEC2Instance = (scope: Construct, vpc: ec2.Vpc, keyPairName: string, 
     'Allow SSH Connections.'
   );
 
+  ec2SG.addIngressRule(
+    ec2.Peer.anyIpv4(),
+    ec2.Port.tcp(5000),
+    'Allow API Requests.'
+  );
+
   const keyPair = ec2.KeyPair.fromKeyPairName(scope, 'key-pair', keyPairName);
 
   const ec2IAMRole = new iam.Role(scope, 'ec2-role', {

@@ -37,6 +37,8 @@ fi
 cd /home/ec2-user/
 mkdir server
 
+sudo chown ec2-user:ec2-user /home/ec2-user/server/
+
 cat <<'SERVICE' | sudo tee /etc/systemd/system/server.service > /dev/null
 [Unit]
 Description=Server Service
