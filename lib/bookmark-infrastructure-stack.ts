@@ -44,6 +44,12 @@ const createEC2Instance = (scope: Construct, vpc: ec2.Vpc, keyPairName: string, 
     'Allow SSH Connections.'
   );
 
+  ec2SG.addIngressRule(
+    ec2.Peer.anyIpv4(),
+    ec2.Port.tcp(5000),
+    'Allow API Requests.'
+  );
+
   const keyPair = ec2.KeyPair.fromKeyPairName(scope, 'key-pair', keyPairName);
 
   const ec2IAMRole = new iam.Role(scope, 'ec2-role', {
@@ -77,8 +83,8 @@ const createEC2Instance = (scope: Construct, vpc: ec2.Vpc, keyPairName: string, 
     instanceId: ec2Instance.instanceId,
   });
 
-  const userDataPath = depEnv === 'dev' ? './lib/user-data-nonprod.sh' : './lib/user-data-prod.sh';
-  const userDataScript = readFileSync(userDataPath, 'utf8');
+  // const userDataPath = depEnv === 'dev' ? './lib/user-data-nonprod.sh' : './lib/user-data-prod.sh';
+  const userDataScript = readFileSync('./lib/user-data-nonprod.sh', 'utf8');
   ec2Instance.addUserData(userDataScript);
 
   return ec2Instance;
@@ -115,6 +121,7 @@ const createDBInstance = (scope: Construct, vpc: ec2.Vpc, dbUsername: string, de
     allocatedStorage: 20,
     removalPolicy: cdk.RemovalPolicy.DESTROY,
     securityGroups: [dbSG],
+    instanceIdentifier: `bookmarker-db-${depEnv}`,
   });
 
   return dbInstance;
