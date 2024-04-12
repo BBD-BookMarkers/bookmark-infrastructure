@@ -42,3 +42,6 @@ And finally, to deploy the stack to AWS you can run:
 npx cdk deploy
 ```
 **_NOTE:_** running CDK commands locally requires that you have AWS CDK CLI instaleld, and that you are authenticated with the appropriate account that you wish to deploy to.
+
+## Link to documentation
+Check out our [Confluence](https://crafdb.atlassian.net/wiki/spaces/BKMK/overview?homepageId=14975190)
